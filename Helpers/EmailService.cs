@@ -15,8 +15,8 @@ namespace FitnessTracker.Helpers
 			email.Body = new TextPart(TextFormat.Html) { Text = body };
 
 			using var smtp = new SmtpClient();
-			await smtp.ConnectAsync("smtp.mailtrap.io", 587, false);
-			await smtp.AuthenticateAsync("YOUR_MAILTRAP_USERNAME", "YOUR_MAILTRAP_PASSWORD");
+			await smtp.ConnectAsync("sandbox.smtp.mailtrap.io", 587, false);
+			await smtp.AuthenticateAsync("a127bd172a5c47", "a349269dbaf10f");
 			await smtp.SendAsync(email);
 			await smtp.DisconnectAsync(true);
 		}

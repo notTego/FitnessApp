@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
 using FitnessTracker.Data;
 using FitnessTracker.DTOs;
 using FitnessTracker.Entities;
@@ -19,18 +20,19 @@ namespace FitnessTracker.Services
 			_tokenService = tokenService;
 		}
 
-		public async Task<(string Token, string Error)> RegisterAsync(UserDTO dto)
+		public async Task<(string? Token, string? Error)> RegisterAsync(UserDTO dto)
 		{
-			if (await _context.Users.AnyAsync(x => x.Username == dto.Username.ToLower()))
+			if (await _context.Users.AnyAsync(u => u.Username == dto.Username))
 				return (null, "Username already exists");
 
-			using var hmac = new HMACSHA512();
+			PasswordHelper.CreatePasswordHash(dto.Password, out var hash, out var salt);
+
 			var user = new User
 			{
-				Username = dto.Username.ToLower(),
-				PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password)),
-				PasswordSalt = hmac.Key,
-				Role = "User"
+				Username = dto.Username,
+				PasswordHash = hash,
+				PasswordSalt = salt,
+				Role = dto.Role ?? "User"
 			};
 
 			_context.Users.Add(user);
@@ -39,6 +41,7 @@ namespace FitnessTracker.Services
 			var token = _tokenService.CreateToken(user);
 			return (token, null);
 		}
+
 
 		public async Task<(string Token, string Error)> LoginAsync(UserDTO dto)
 		{

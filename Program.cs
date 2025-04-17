@@ -31,7 +31,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 			ValidateIssuerSigningKey = true,
 			ValidIssuer = jwtSettings.Issuer,
 			ValidAudience = jwtSettings.Audience,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
+			IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(jwtSettings.Key))
+
 		};
 	});
 
@@ -46,7 +47,12 @@ builder.Services.AddScoped<IProgressService, ProgressService>();
 builder.Services.AddSingleton<EmailService>();
 
 //Controllere
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddJsonOptions(options =>
+	{
+		options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+		options.JsonSerializerOptions.WriteIndented = true;
+	});
 
 //Swagger
 builder.Services.AddEndpointsApiExplorer();

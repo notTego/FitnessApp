@@ -29,6 +29,7 @@ namespace FitnessTracker.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Create(ExerciseDTO dto)
 		{
 			var created = await _service.CreateAsync(dto);
@@ -36,6 +37,7 @@ namespace FitnessTracker.Controllers
 		}
 
 		[HttpPut("{id}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Update(int id, ExerciseDTO dto)
 		{
 			var updated = await _service.UpdateAsync(id, dto);
@@ -43,6 +45,7 @@ namespace FitnessTracker.Controllers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Roles = "Admin")]
 		public async Task<IActionResult> Delete(int id)
 		{
 			var deleted = await _service.DeleteAsync(id);

@@ -25,12 +25,13 @@ namespace FitnessTracker.Data
 			}
 
 			// Seed default admin user
-			if (!context.Users.Any(u => u.Username == "admin"))
+			if (!context.Users.Any(u => u.Username.ToLower() == "admin"))
 			{
 				using var hmac = new System.Security.Cryptography.HMACSHA512();
 				var admin = new User
 				{
 					Username = "admin",
+					Email = "admin@fitnessapp.com",
 					Role = "Admin",
 					PasswordSalt = hmac.Key,
 					PasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes("admin123"))
